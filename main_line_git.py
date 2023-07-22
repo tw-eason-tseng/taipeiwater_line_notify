@@ -14,16 +14,13 @@ config.read("config.ini")
 mpl.rcParams['font.family']='MOESongUN'
 
 ocr = ddddocr.DdddOcr(beta=True)
-#ocr = ddddocr.DdddOcr()
 
-#token = "kmw3zGQhm8aAy299lQ45zYxqKFdzVuK1LUfAHYscLOh"
 token = config["Line"]["token"]
 headers = {
     "Authorization": "Bearer " + token
 }
 
 _url = "https://mbr.water.gov.taipei"
-#_waterno = "S180743011"
 _waterno = config['water']['waterno']
 _retry_num = 5
 
@@ -38,7 +35,7 @@ def _ocr_try(session,waternum,token,retry):
     _get_validatecode = session.get(f"{_url}/Home/GetValidateCode" ,verify=False )
     _get_png = _get_validatecode.content
     res_ocr = ocr.classification(_get_png)
-    #print(res_ocr.upper())
+    print(res_ocr.upper())
 
     post_data = {
         "WaterNo":waternum,
@@ -47,11 +44,6 @@ def _ocr_try(session,waternum,token,retry):
     }
     _index_post = session.post(f"{_url}/WTSVCL023F/Index",data = post_data,allow_redirects=False,verify=False)
     if _index_post.status_code == 200 :
-        #print(_index_post.history)
-        #print(_index_post.status_code)
-        #print("-200-")
-        #print(_index_post)
-        #print(_index_post.content)
         return(_index_post.text)
     else:
         print("[Info]驗證碼 or 水號錯誤")
@@ -64,7 +56,6 @@ def _ocr_try(session,waternum,token,retry):
         else:
             print("-None-")
             return None
-    #return None
 
 
 
